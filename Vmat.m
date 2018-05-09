@@ -2,10 +2,10 @@ function V = Vmat(N, K, dom, tol)
 % NxN Legendre-US Voterra operator matrix with kernel K on the domain dom.
 %
 % K may be a function handle or specified by it's Legendre coefficients on 
-% [0 dom(2)]. In either casecoefficients less than tol in magnitude are set to
+% [0 dom(2)]. In either case coefficients less than tol in magnitude are set to
 % zero.
 %
-% This code is somewhat optimised for spead and accuracy. A more readable
+% This code is somewhat optimised for speed and accuracy. A more readable
 % version is provided below, but it is not recommended that this be used for
 % computation (in particular, the readable version will be unstable for even
 % moderate values of N.)

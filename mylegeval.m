@@ -1,9 +1,10 @@
-function y = legpolyval(c, x, dom)
+function y = mylegeval(c, x, dom)
 % Evaluate mapped-Legendre expansions on domain dom.
 % (c = coefficients, x = evaluation points.)
 
 % Scale values to [-1 1];
-if ( nargin > 2 ), x = 2*x/dom(2) - 1; end
+% if ( nargin > 2 ), x = 2*x/dom(2) - 1; end
+if ( nargin > 2 ), x = 2*(x-dom(1))/(dom(2)-dom(1)) - 1; end
 
 % Clenshaw scheme:
 bk1 = 0*x; 

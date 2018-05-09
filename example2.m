@@ -1,4 +1,5 @@
 % Example 2 from VIDECT paper
+% Nick Hale - 2018
 
 %% Set-up problem:
 
@@ -14,8 +15,7 @@ b = sqrt(a^2-2*a+5)/2;
 K = @(t) exp(-t);
 
 % RHS:
-f = @(t) exp(-t)/b.* ...
-    (exp(-(a-1)/2*T)*sinh(b*T) - exp(-(a-1)/2*t).*sinh(b*t));
+f = @(t) exp(-t)/b .* (exp(-(a-1)/2*T)*sinh(b*T) - exp(-(a-1)/2*t).*sinh(b*t));
 
 % Exact solution
 sol = @(t) exp(-(a+1)/2*t).*(cosh(b*t) - .5*(a-1)/b*sinh(b*t));
@@ -33,6 +33,10 @@ I = @(N) speye(N);
 S12 = @(N) Smat(N, 1/2);
 S32 = @(N) Smat(N, 3/2);
 
+% % Faster / more accurate computation of Legendre coefficients:
+% K_ = @(N) [ones(1, N) ; speye(N-1,N)*(D(N)+S12(N))]\[exp(-1); zeros(N-1,1)];
+% V = @(N) Vmat(N, speye(N, 2*N)*K_(2*N), d, 1e-20);
+
 tt = linspace(0, T, 1000);
 err = [];
 err2 = [];
@@ -41,7 +45,7 @@ for N = [NN 60]
     fprintf('%d ', N);
     
     % The integro-differential operator:
-    A = D2(N) + S32(N)*(a*D(N) + S12(N)*(F(N) - eye(N)));
+    A = D2(N) + S32(N)*(a*D(N) + S12(N)*(F(N) - speye(N)));
     
     % Boundary conditions:
     B = ones(2,N);          % Dirichlet right
@@ -56,8 +60,8 @@ for N = [NN 60]
     rhs = [gam ; f_(1:N-2)];
     
     % Approximate coefficients of solution:
-    y_ = mysolve(A, rhs, 2); % Schur factorisation. 
-%     y_ = A\rhs;            % Backslash.
+%     y_ = mysolve(A, rhs, 2); % Schur factorisation. 
+    y_ = A\rhs;            % Backslash.
     
     % Error:
     y = @(t) mylegeval(y_, t, d);
@@ -85,7 +89,7 @@ semilogy(NN, err(NN), '-', 'LineWidth', 3), shg
 axis([0 NN(end) 1e-16, 1e1]), grid on
 h = breakxaxis([100 980]);
 set(h.leftAxes, 'XTick', [0 20 40 60 80 100])
-set(h.rightAxes, 'XTick', 1000)
+set(h.rightAxes, 'XTick', 1000, 'fontsize', 9.5)
 % print -depsc2 example2_err
 
 % Solution (linear and log)
@@ -100,12 +104,3 @@ legend('plot(t, y)', 'semilogy(t, y)')
 
 % Align the figures for display:
 alignfigs % (http://github.com/nickhale/alignfigs)
-
-
-
-
-
-
-
-
-

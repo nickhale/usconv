@@ -2,7 +2,7 @@ These codes reproduce the results in HALE, NICHOLAS - AN ULTRASPHERICAL SPECTRAL
 METHOD FOR LINEAR FREDHOLM AND VOLTERRA INTEGRO-DIFFERENTIAL EQUATIONS OF 
 CONVOLUTION TYPE.
 
-The codes relies on 
+The code relies on 
  * chebvals2legcoeffs() and ultra2ultra() from Chebfun 
    (https://github.com/chebfun/chebfun)
  * breakaxis()

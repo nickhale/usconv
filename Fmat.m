@@ -1,13 +1,13 @@
 function F = Fmat(N, K, varargin)
-% NxN Legendre-US Fredhold operator matrix with kernel K on the domain dom.
+% NxN Legendre-US Fredholm operator matrix with kernel K on the domain dom.
 %
 % K may be a function handle, in which case the calling sequence should be 
 % FMAT(N, K, DOM, TOL) (where coefficients less than tol in magnitude are set to
 % zero).
 %
-% Alternatively K may be specified by it's Legendre coefficients on [0 dom(2)], 
+% Alternatively K may be specified by its Legendre coefficients on [0 dom(2)], 
 % in which case the calling sequence is FMAT(N, K, KHAT, DOM, TOL), where KHAT
-% are the Legendre coefficints of the kernel on the inteval [-dom(2), 0].
+% are the Legendre coefficients of the kernel on the inteval [-dom(2), 0].
 
 % Parse the inputs:
 if ( isnumeric(K) )

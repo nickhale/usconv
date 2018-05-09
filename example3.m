@@ -1,4 +1,5 @@
 % Example 3 from VIDECT paper
+% Nick Hale - 2018
 
 %% Set-up problem:
 
@@ -10,6 +11,7 @@ d = [0 T];
 a = .1;
 b = .2;
 r = sqrt(a^2+b^2);
+gam = [1 ; sqrt(pi/2)*a*erf(1/(sqrt(2)*a))];
 
 % Kernel:
 K = @(t) exp(-.5*t.^2/b^2);
@@ -35,6 +37,8 @@ S12 = @(N) Smat(N, 1/2);
 S32 = @(N) Smat(N, 3/2);
 % Multiplication operator:
 M = @(N) Mmat(N, @(t) t, d, 3/2); % t in C^{3/2}
+% % Alternative  (use (t*u' + u = (t*u)'):
+% M2 = @(N) Mmat(N, @(t) t, d, 1/2); % t in C^{1/2}
 
 err = [];
 tt = linspace(0, T, 1000);
@@ -45,11 +49,13 @@ for N = [NN 60]
     % The integro-differential operator:
     A = a^2*D2(N) + S32(N)*( M(N)*D(N) + S12(N)*(I(N) + F(N)) );
     
+%     % Alternative (use (t*u' + u = (t*u)'):
+%     A = a^2*D2(N) + S32(N)*( D(N)*M2(N) + S12(N)*F(N) );
+    
     % Boundary conditions:
     B = ones(2,N); 
     B(1,2:2:end) = -1;  % Dirichlet
     B(2,2:end) = 0;     % Mean value
-    gam = [1 ; sqrt(pi/2)*a*erf(1/(sqrt(2)*a))];
     
     % Almost-banded operator:
     A = [B ; A(1:N-2,:)];
@@ -57,10 +63,10 @@ for N = [NN 60]
     % RHS:
     f_ = S32(N)*S12(N)*mylegcoeffs(f, N, d);
     rhs = [gam ; f_(1:N-2)];
-    
+        
     % Approximate coefficients of solution:
-    y_ = mysolve(A, rhs, 2); % Schur factorisation. 
-%     y_ = A\rhs;            % Backslash.
+%     y_ = mysolve(A, rhs, 2); % Schur factorisation. 
+    y_ = A\rhs;            % Backslash.
     
     % Approximate infinity norm err
     y = @(t) mylegeval(y_, t, d);
@@ -70,6 +76,7 @@ end
 fprintf('\n');
 
 %% Plotting:
+close all
 
 % Spy plot:
 figure(1)
@@ -79,7 +86,6 @@ spy(A);
 % Solution:
 figure(2)
 plot(tt, y(tt), 'LineWidth', 3);
-% hold on, plot(tt, sol(tt), '--', 'LineWidth', 2), hold off
 ylim([0 1])
 % print -depsc2 example3_sol
 
@@ -87,9 +93,10 @@ ylim([0 1])
 figure(3)
 semilogy(NN, err(NN), '-', 'LineWidth', 3), shg
 axis([0 NN(end) 1e-16, 1e1]); grid on
-h = breakxaxis([100 980]);
-set(h.leftAxes, 'XTick', [0 20 40 60 80 100]);
-set(h.rightAxes, 'XTick', 1000);
+hold on
+% h = breakxaxis([100 980]);
+% set(h.leftAxes, 'XTick', [0 20 40 60 80 100]);
+% set(h.rightAxes, 'XTick', 1000);
 % print -depsc2 example3_err
 
 % Solution (linear and log)
@@ -105,11 +112,3 @@ legend('plot(t, y)', 'semilogy(t, y)');
 
 % Align the figures for display:
 alignfigs % (http://github.com/nickhale/alignfigs)
-
-
-
-
-
-
-
-

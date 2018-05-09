@@ -1,4 +1,5 @@
-% Example 2 from VIDECT paper
+% Example 1 from VIDECT paper
+% Nick Hale - 2018
 
 %% Set-up problem:
 
@@ -29,8 +30,9 @@ I = @(N) speye(N);
 S12 = @(N) Smat(N, 1/2);
 S32 = @(N) Smat(N, 3/2);
 
-K_ = @(N) [ones(1, N) ; speye(N-1,N)*(D(N)+S12(N))]\[exp(-1); zeros(N-1,1)];
-V = @(N) Vmat(N, speye(N, 2*N)*K_(2*N), d, 1e-20);
+% % Faster / more accurate computation of Legendre coefficients:
+% K_ = @(N) [ones(1, N) ; speye(N-1,N)*(D(N)+S12(N))]\[exp(-1); zeros(N-1,1)];
+% V = @(N) Vmat(N, speye(N, 2*N)*K_(2*N), d, 1e-20);
 
 tt = linspace(0, T, 1000);
 err = [];
@@ -86,9 +88,8 @@ semilogy(NN, err(NN), '-', 'LineWidth', 3), shg
 axis([0 NN(end) 1e-16, 1e1]), grid on
 h = breakxaxis([100 980]);
 set(h.leftAxes, 'XTick', [0 20 40 60 80 100])
-set(h.rightAxes, 'XTick', 1000)
-print -depsc2 example1_err
-
+set(h.rightAxes, 'XTick', 1000, 'fontsize', 9.5)
+% print -depsc2 example1_err
 
 % Solution (linear and log)
 figure(4)
@@ -100,16 +101,5 @@ grid on
 legend('plot(t, y)', 'semilogy(t, y)')
 % print -depsc2 example1_logsol
 
-
-
 % Align the figures for display:
 alignfigs % (http://github.com/nickhale/alignfigs)
-
-
-
-
-
-
-
-
-
